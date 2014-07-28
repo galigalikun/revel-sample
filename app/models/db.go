@@ -1,11 +1,10 @@
-package controllers
+package models
 
 import (
     "github.com/revel/revel"
     "database/sql"
     _ "github.com/mattn/go-sqlite3"
     "github.com/coopernurse/gorp"
-    "myapp/app/models" // revel new APP_NAME の APP_NAME
 )
 
 var (
@@ -34,7 +33,7 @@ func InitDB() {
     DbMap = &gorp.DbMap{Db: db, Dialect: gorp.SqliteDialect{}}
 
     // ここで好きにテーブルを定義する
-    t := DbMap.AddTable(models.User{}).SetKeys(true, "Id")
+    t := DbMap.AddTable(User{}).SetKeys(true, "Id")
     t.ColMap("Name").MaxSize = 20
 
     DbMap.CreateTables()
