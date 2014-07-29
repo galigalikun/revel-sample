@@ -2,9 +2,9 @@ package models
 
 import (
     "github.com/revel/revel"
-    "database/sql"
     _ "github.com/mattn/go-sqlite3"
     "github.com/coopernurse/gorp"
+    "github.com/revel/revel/modules/db/app"
 )
 
 var (
@@ -24,13 +24,8 @@ func init() {
 }
 
 func InitDB() {
-    driver, _ := revel.Config.String("db.driver")
-    spec, _ := revel.Config.String("db.spec")
-    db, err := sql.Open(driver, spec) // "sqlite3", "./app.db")
-    if err != nil {
-        panic(err.Error())
-    }
-    DbMap = &gorp.DbMap{Db: db, Dialect: gorp.SqliteDialect{}}
+    db.Init()
+    DbMap = &gorp.DbMap{Db: db.Db, Dialect: gorp.SqliteDialect{}}
 
     // ここで好きにテーブルを定義する
     t := DbMap.AddTable(User{}).SetKeys(true, "Id")
