@@ -26,6 +26,13 @@ func (c App) Index() revel.Result {
 
 func (c App) Insert() revel.Result {
     user := models.User{Name: "insert"}
+    user.Validate(c.Validation)
+    
+    if c.Validation.HasErrors() {
+        c.Validation.Keep()
+        c.FlashParams()
+        return c.RenderJson("error")
+    }
     err := c.Txn.Insert(&user)
     checkError(err, "insert error")
     return c.RenderJson(user)
@@ -37,6 +44,14 @@ func (c App) Update(id int) revel.Result {
     checkError(err, fmt.Sprintf("update select one error:%d:", id))
 
     user.Name = "update"
+    user.Validate(c.Validation)
+    
+    if c.Validation.HasErrors() {
+        c.Validation.Keep()
+        c.FlashParams()
+        return c.RenderJson("error")
+    }
+
     count, err := c.Txn.Update(&user)
     checkError(err, fmt.Sprintf("update error:%d", count))
 
